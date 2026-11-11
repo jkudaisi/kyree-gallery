@@ -31,8 +31,13 @@ const clips=$$('.clip video');const pio=new IntersectionObserver(es=>es.forEach(
 const lb=$('#lb'),st=$('.stage',lb),cap=$('.lcap',lb);let group=[],idx=0;
 const show=()=>{const it=group[idx];st.innerHTML='';let el;if(it.type==='video'){el=d.createElement('video');el.src=it.src;el.muted=true;el.loop=true;el.playsInline=true;el.controls=true;if(!RM)el.autoplay=true;el.poster=it.poster||''}else{el=d.createElement('img');el.src=it.src;el.alt=it.alt||''}
  st.appendChild(el);cap.innerHTML=(it.cap||'')+(it.post?` &nbsp;·&nbsp; <a href="${it.post}" target="_blank" rel="noopener">View on Instagram</a>`:'')};
-const open=(g,i)=>{group=g;idx=i;show();lb.showModal();lenis&&lenis.stop()};
-lb.addEventListener('close',()=>{st.innerHTML='';lenis&&lenis.start()});
+let lockY=0;const bd=d.body,de=d.documentElement;
+const lock=()=>{lockY=w.scrollY;de.classList.add('lb-open');bd.style.top=-lockY+'px'};
+const unlock=()=>{de.classList.remove('lb-open');bd.style.top='';w.scrollTo(0,lockY);lenis&&lenis.scrollTo(lockY,{immediate:true})};
+const open=(g,i)=>{group=g;idx=i;show();lock();lb.showModal();lenis&&lenis.stop()};
+lb.addEventListener('close',()=>{st.innerHTML='';unlock();lenis&&lenis.start()});
+lb.addEventListener('touchmove',e=>{if(e.target.tagName!=='VIDEO')e.preventDefault()},{passive:false});
+lb.addEventListener('wheel',e=>e.preventDefault(),{passive:false});
 $('.x',lb).onclick=()=>lb.close();$('.prev',lb).onclick=()=>{idx=(idx-1+group.length)%group.length;show()};$('.next',lb).onclick=()=>{idx=(idx+1)%group.length;show()};
 lb.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')$('.prev',lb).click();if(e.key==='ArrowRight')$('.next',lb).click()});
 lb.addEventListener('click',e=>{if(e.target===lb||e.target===st)lb.close()});

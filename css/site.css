@@ -216,3 +216,8 @@ dialog.lb::backdrop{background:rgba(15,14,13,.94)}
 
 img[height]{height:auto}
 .strip img,.spread .page.photo img,.clip img{height:100%}
+
+html.lb-open,html.lb-open body{overflow:hidden;overscroll-behavior:none}
+html.lb-open body{position:fixed;left:0;right:0;width:100%}
+dialog.lb{touch-action:none;overscroll-behavior:contain}
+.lb video{touch-action:auto}
